@@ -1,0 +1,41 @@
+1.Create a view for customers who have purchased products.
+==========================================================
+mysql> create view purchased_customer as select distinct customer.cust_name from invoice_master natural join customer;
+Query OK, 0 rows affected (0.77 sec)
+
+mysql> select * from purchased_customer;
++-----------+
+| cust_name |
++-----------+
+| carl      |
+| johnson   |
+| Augustin  |
+| Ben       |
+| anu       |
++-----------+
+5 rows in set (0.06 sec)
+
+2.Create a view for invoice products[cname,quantity,inv_id,product_id]
+======================================================================
+mysql> create view invoice_products as select cust_name,quantity,inv_id,p_id from customer natural join invoice_master natural join invoice_item;
+Query OK, 0 rows affected (0.18 sec)
+
+mysql> select * from invoice_products;
++-----------+----------+--------+------+
+| cust_name | quantity | inv_id | p_id |
++-----------+----------+--------+------+
+| carl      |        1 |      1 |    2 |
+| carl      |        2 |      1 |    5 |
+| carl      |        2 |      2 |    4 |
+| carl      |        1 |      2 |    5 |
+| johnson   |        5 |      3 |    5 |
+| johnson   |        5 |      3 |    4 |
+| johnson   |        4 |      4 |    2 |
+| Augustin  |        4 |      5 |    6 |
+| Ben       |        2 |      7 |    5 |
+| anu       |        2 |      8 |    6 |
++-----------+----------+--------+------+
+10 rows in set (0.00 sec)
+
+
+//verified

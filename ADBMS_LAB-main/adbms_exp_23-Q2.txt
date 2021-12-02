@@ -1,0 +1,682 @@
+2. Create two MongoDB replication servers and do the necessary operations.
+==========================================================================
+________________________________________________________________________________
+Step-1  Create 2 directories in C as data1, data 2 (these are secondary servers)
+________________________________________________________________________________
+
+
+_______________________________________________________________________________
+Step-2  Inside the data 1 folder create another 3 folders
+  -->  folder named 'config', 'db' and 'log'
+_______________________________________________________________________________
+
+_______________________________________________________________________________
+Step3:
+
+# Inside the config folder create a text file named 'mongo.cfg'
+
+# Edit the mongo.cfg file and set dbpath, logpath, and port number in it.
+     -->   dbpath=C:\data1\db\path
+     -->   logpath=C:\data1\log\mongod.log\
+     -->   port=27020
+# Save this file
+
+# Inside the log directory create a text file named 'mongod.log' without editing.
+
+# Copy the above 3 directories from data1(config,db,log) and paste into data2.
+# Open data2’s config folder and edit mongo.cfg file as:
+     -->   dbpath=C:\data2\db\path
+     -->   logpath=C:\data2\log\mongod.log\
+     -->   port=27021
+_______________________________________________________________________________
+
+
+
+_______________________________________________________________________________
+step-4   Open command prompt as Administrator
+	 Set the path mongodb bin
+
+   -->   C:\Windows\system32>cd C:\Program Files\MongoDB\Server\5.0\bin
+
+
+
+_______________________________________________________________________________
+step-5   Goto run command and type: service
+	 Find mongodb server, if it is run, and just stop the server:
+_______________________________________________________________________________
+
+
+_______________________________________________________________________________
+step-6   Open next command prompt as administrator
+	 Navigate to mongo bin
+
+
+   -->      C:\Windows\system32>cd C:\Program Files\MongoDB\Server\5.0\bin
+
+   -->         C:\Program Files\MongoDB\Server\5.0\bin>mongod --dbpath "C:\Program Files\MongoDB\Server\5.0\data" 
+               --logpath "C:\Program Files\MongoDB\Server\5.0\log\mongod.log" --port 27017 --storageEngine=wiredTiger 
+               --journal --replSet ksb
+
+
+________________________________________________________________________________
+Step-7	Open another command as administrator
+	Show dbs
+	It shows one error because it's not configure the replica set
+	
+	So create a configuration variable rsconf for the replica set next:
+	Here _id: 0 means this is the first server
+
+        -->      C:\Windows\system32>cd C:\Program Files\MongoDB\Server\5.0\bin
+
+        -->      C:\Program Files\MongoDB\Server\5.0\bin>mongo --port 27017
+
+
+
+
+>rsconf={_id:"ksb",members: [{_id:0, host: "localhost:27017"}]}
+{
+        "_id" : "ksb",
+        "members" : [
+                {
+                        "_id" : 0,
+                        "host" : "localhost:27017"
+                }
+        ]
+}
+
+___________________________________________________________________________________
+
+
+Step-8	Initiate the configuration variable:
+	 rs.initiate(rsconf)
+
+   -->   > rs.initiate(rsconf)
+         { "ok" : 1 }
+         ksb:SECONDARY>
+
+
+
+
+____________________________________________________________________________________
+Step9: configure secondary server :
+	27020
+	Open command prompt as administrator
+	Navigate to mongodb bin directory
+	Type the command:
+		mongod --dbpath "C:\data1" --logpath "C:\data1\log\mongod.log" --port 27020 
+		--storageEngine=wiredTiger --journal --replSet ksb
+
+   -->  C:\Windows\system32>cd C:\Program Files\MongoDB\Server\5.0\bin
+
+
+
+   -->  C:\Program Files\MongoDB\Server\5.0\bin>mongod --dbpath "C:\data1" --logpath "C:\data1\log\mongod.log" 
+           --port 27020 --storageEngine=wiredTiger --journal --replSet ksb
+
+
+
+
+
+_____________________________________________________________________________________
+Step10: configure secondary
+	server : 27021
+	Open command prompt as administrator
+	Navigate to mongodb bin directory
+
+	Type the command:
+
+	mongod --dbpath "C:\data2" --logpath "C:\data2\log\mongod.log" --port 27021 
+	--storageEngine=wiredTiger --journal --replSet ksb
+
+
+
+   -->  C:\Windows\system32>cd C:\Program Files\MongoDB\Server\5.0\bin
+
+   -->  C:\Program Files\MongoDB\Server\5.0\bin>mongod --dbpath "C:\data2" --logpath "C:\data2\log\mongod.log" 
+           --port 27021 --storageEngine=wiredTiger --journal --replSet ksb
+
+
+        >>> OUTPUT <<<
+        Now we can see both directories(data1, data2) have some files 
+
+
+
+
+_______________________________________________________________________________________ 
+Step-11 add seconday server(27020) to
+	replica set
+	
+	
+
+	*  In the command prompt(27017):
+ 	   rs.add("localhost:27020")
+	*  Can verify server:
+	   rs.status()
+________________________________________________________________________________________
+________________________________________________________________________________________
+
+ksb:SECONDARY> show dbs
+INVOICE  0.000GB
+admin    0.000GB
+config   0.000GB
+local    0.000GB
+student  0.000GB
+test     0.000GB
+ksb:PRIMARY> rs.add("localhost:27020")
+{
+        "ok" : 1,
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1633100181, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1633100181, 1)
+}
+ksb:PRIMARY>
+
+
+
+
+
+ksb:PRIMARY> rs.status()
+{
+        "set" : "ksb",
+        "date" : ISODate("2021-10-01T14:58:58.789Z"),
+        "myState" : 1,
+        "term" : NumberLong(1),
+        "syncSourceHost" : "",
+        "syncSourceId" : -1,
+        "heartbeatIntervalMillis" : NumberLong(2000),
+        "majorityVoteCount" : 2,
+        "writeMajorityCount" : 2,
+        "votingMembersCount" : 2,
+        "writableVotingMembersCount" : 2,
+        "optimes" : {
+                "lastCommittedOpTime" : {
+                        "ts" : Timestamp(1633100330, 1),
+                        "t" : NumberLong(1)
+                },
+                "lastCommittedWallTime" : ISODate("2021-10-01T14:58:50.383Z"),
+                "readConcernMajorityOpTime" : {
+                        "ts" : Timestamp(1633100330, 1),
+                        "t" : NumberLong(1)
+                },
+                "appliedOpTime" : {
+                        "ts" : Timestamp(1633100330, 1),
+                        "t" : NumberLong(1)
+                },
+                "durableOpTime" : {
+                        "ts" : Timestamp(1633100330, 1),
+                        "t" : NumberLong(1)
+                },
+                "lastAppliedWallTime" : ISODate("2021-10-01T14:58:50.383Z"),
+                "lastDurableWallTime" : ISODate("2021-10-01T14:58:50.383Z")
+        },
+        "lastStableRecoveryTimestamp" : Timestamp(1633100321, 1),
+        "electionCandidateMetrics" : {
+                "lastElectionReason" : "electionTimeout",
+                "lastElectionDate" : ISODate("2021-10-01T14:25:31.117Z"),
+                "electionTerm" : NumberLong(1),
+                "lastCommittedOpTimeAtElection" : {
+                        "ts" : Timestamp(0, 0),
+                        "t" : NumberLong(-1)
+                },
+                "lastSeenOpTimeAtElection" : {
+                        "ts" : Timestamp(1633098330, 1),
+                        "t" : NumberLong(-1)
+                },
+                "numVotesNeeded" : 1,
+                "priorityAtElection" : 1,
+                "electionTimeoutMillis" : NumberLong(10000),
+                "newTermStartDate" : ISODate("2021-10-01T14:25:31.393Z"),
+                "wMajorityWriteAvailabilityDate" : ISODate("2021-10-01T14:25:31.674Z")
+        },
+        "members" : [
+                {
+                        "_id" : 0,
+                        "name" : "localhost:27017",
+                        "health" : 1,
+                        "state" : 1,
+                        "stateStr" : "PRIMARY",
+                        "uptime" : 2415,
+                        "optime" : {
+                                "ts" : Timestamp(1633100330, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDate" : ISODate("2021-10-01T14:58:50Z"),
+                        "syncSourceHost" : "",
+                        "syncSourceId" : -1,
+                        "infoMessage" : "",
+                        "electionTime" : Timestamp(1633098331, 1),
+                        "electionDate" : ISODate("2021-10-01T14:25:31Z"),
+                        "configVersion" : 3,
+                        "configTerm" : 1,
+                        "self" : true,
+                        "lastHeartbeatMessage" : ""
+                },
+                {
+                        "_id" : 1,
+                        "name" : "localhost:27020",
+                        "health" : 1,
+                        "state" : 2,
+                        "stateStr" : "SECONDARY",
+                        "uptime" : 157,
+                        "optime" : {
+                                "ts" : Timestamp(1633100330, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDurable" : {
+                                "ts" : Timestamp(1633100330, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDate" : ISODate("2021-10-01T14:58:50Z"),
+                        "optimeDurableDate" : ISODate("2021-10-01T14:58:50Z"),
+                        "lastHeartbeat" : ISODate("2021-10-01T14:58:57.785Z"),
+                        "lastHeartbeatRecv" : ISODate("2021-10-01T14:58:58.370Z"),
+                        "pingMs" : NumberLong(0),
+                        "lastHeartbeatMessage" : "",
+                        "syncSourceHost" : "localhost:27017",
+                        "syncSourceId" : 0,
+                        "infoMessage" : "",
+                        "configVersion" : 3,
+                        "configTerm" : 1
+                }
+        ],
+        "ok" : 1,
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1633100330, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1633100330, 1)
+}
+ksb:PRIMARY>
+
+
+_________________________________________________________________________________________
+Step-12  add seconday server(27021) to
+	 replica set
+
+	-->  In the command prompt(27017):
+	     rs.add("localhost:27021")
+
+	-->  Check the status:
+	     rs.status()
+	     Now we can see 3 servers(primary, and 2 secondary )
+____________________________________________________________________________________________
+____________________________________________________________________________________________
+ksb:PRIMARY> rs.add("localhost:27021")
+{
+        "ok" : 1,
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1633100512, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1633100512, 1)
+}
+
+
+
+
+
+
+ksb:PRIMARY> rs.status()
+{
+        "set" : "ksb",
+        "date" : ISODate("2021-10-01T15:03:01.961Z"),
+        "myState" : 1,
+        "term" : NumberLong(1),
+        "syncSourceHost" : "",
+        "syncSourceId" : -1,
+        "heartbeatIntervalMillis" : NumberLong(2000),
+        "majorityVoteCount" : 2,
+        "writeMajorityCount" : 2,
+        "votingMembersCount" : 3,
+        "writableVotingMembersCount" : 3,
+        "optimes" : {
+                "lastCommittedOpTime" : {
+                        "ts" : Timestamp(1633100571, 1),
+                        "t" : NumberLong(1)
+                },
+                "lastCommittedWallTime" : ISODate("2021-10-01T15:02:51.825Z"),
+                "readConcernMajorityOpTime" : {
+                        "ts" : Timestamp(1633100571, 1),
+                        "t" : NumberLong(1)
+                },
+                "appliedOpTime" : {
+                        "ts" : Timestamp(1633100581, 1),
+                        "t" : NumberLong(1)
+                },
+                "durableOpTime" : {
+                        "ts" : Timestamp(1633100571, 1),
+                        "t" : NumberLong(1)
+                },
+                "lastAppliedWallTime" : ISODate("2021-10-01T15:03:01.825Z"),
+                "lastDurableWallTime" : ISODate("2021-10-01T15:02:51.825Z")
+        },
+        "lastStableRecoveryTimestamp" : Timestamp(1633100561, 1),
+        "electionCandidateMetrics" : {
+                "lastElectionReason" : "electionTimeout",
+                "lastElectionDate" : ISODate("2021-10-01T14:25:31.117Z"),
+                "electionTerm" : NumberLong(1),
+                "lastCommittedOpTimeAtElection" : {
+                        "ts" : Timestamp(0, 0),
+                        "t" : NumberLong(-1)
+                },
+                "lastSeenOpTimeAtElection" : {
+                        "ts" : Timestamp(1633098330, 1),
+                        "t" : NumberLong(-1)
+                },
+                "numVotesNeeded" : 1,
+                "priorityAtElection" : 1,
+                "electionTimeoutMillis" : NumberLong(10000),
+                "newTermStartDate" : ISODate("2021-10-01T14:25:31.393Z"),
+                "wMajorityWriteAvailabilityDate" : ISODate("2021-10-01T14:25:31.674Z")
+        },
+        "members" : [
+                {
+                        "_id" : 0,
+                        "name" : "localhost:27017",
+                        "health" : 1,
+                        "state" : 1,
+                        "stateStr" : "PRIMARY",
+                        "uptime" : 2658,
+                        "optime" : {
+                                "ts" : Timestamp(1633100581, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDate" : ISODate("2021-10-01T15:03:01Z"),
+                        "syncSourceHost" : "",
+                        "syncSourceId" : -1,
+                        "infoMessage" : "",
+                        "electionTime" : Timestamp(1633098331, 1),
+                        "electionDate" : ISODate("2021-10-01T14:25:31Z"),
+                        "configVersion" : 5,
+                        "configTerm" : 1,
+                        "self" : true,
+                        "lastHeartbeatMessage" : ""
+                },
+                {
+                        "_id" : 1,
+                        "name" : "localhost:27020",
+                        "health" : 1,
+                        "state" : 2,
+                        "stateStr" : "SECONDARY",
+                        "uptime" : 400,
+                        "optime" : {
+                                "ts" : Timestamp(1633100571, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDurable" : {
+                                "ts" : Timestamp(1633100571, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDate" : ISODate("2021-10-01T15:02:51Z"),
+                        "optimeDurableDate" : ISODate("2021-10-01T15:02:51Z"),
+                        "lastHeartbeat" : ISODate("2021-10-01T15:03:01.156Z"),
+                        "lastHeartbeatRecv" : ISODate("2021-10-01T15:03:01.236Z"),
+                        "pingMs" : NumberLong(0),
+                        "lastHeartbeatMessage" : "",
+                        "syncSourceHost" : "localhost:27017",
+                        "syncSourceId" : 0,
+                        "infoMessage" : "",
+                        "configVersion" : 5,
+                        "configTerm" : 1
+                },
+                {
+                        "_id" : 2,
+                        "name" : "localhost:27021",
+                        "health" : 1,
+                        "state" : 2,
+                        "stateStr" : "SECONDARY",
+                        "uptime" : 68,
+                        "optime" : {
+                                "ts" : Timestamp(1633100571, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDurable" : {
+                                "ts" : Timestamp(1633100571, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDate" : ISODate("2021-10-01T15:02:51Z"),
+                        "optimeDurableDate" : ISODate("2021-10-01T15:02:51Z"),
+                        "lastHeartbeat" : ISODate("2021-10-01T15:03:01.158Z"),
+                        "lastHeartbeatRecv" : ISODate("2021-10-01T15:03:01.722Z"),
+                        "pingMs" : NumberLong(0),
+                        "lastHeartbeatMessage" : "",
+                        "syncSourceHost" : "localhost:27020",
+                        "syncSourceId" : 1,
+                        "infoMessage" : "",
+                        "configVersion" : 5,
+                        "configTerm" : 1
+                }
+        ],
+        "ok" : 1,
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1633100581, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1633100581, 1)
+}
+
+____________________________________________________________________________________________________
+Step-13  connect port 27020
+	 Open new command prompt and connect the server
+
+	* Here we cant see any information.
+	  So we want to create this secondary server as slave:
+	  rs.slaveOk()
+	  Or
+	  rs.secondaryOk()
+__________________________________________________________________________________________________
+______________________________________________________________________________________________________
+
+C:\Windows\system32>cd C:\Program Files\MongoDB\Server\5.0\bin
+
+C:\Program Files\MongoDB\Server\5.0\bin>mongo --port 27020
+
+
+MongoDB shell version v5.0.2
+connecting to: mongodb://127.0.0.1:27020/?compressors=disabled&gssapiServiceName=mongodb
+Implicit session: session { "id" : UUID("80772dbf-8e8c-4e83-aae9-91bd2f3d887d") }
+MongoDB server version: 5.0.2
+================
+Warning: the "mongo" shell has been superseded by "mongosh",
+which delivers improved usability and compatibility.The "mongo" shell has been deprecated and will be removed in
+an upcoming release.
+We recommend you begin using "mongosh".
+For installation instructions, see
+https://docs.mongodb.com/mongodb-shell/install/
+================
+---
+The server generated these startup warnings when booting:
+        2021-10-01T19:59:45.403+05:30: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+        2021-10-01T19:59:45.404+05:30: This server is bound to localhost. Remote systems will be unable to connect to this server. Start the server with --bind_ip <address> to specify which IP addresses it should serve responses from, or with --bind_ip_all to bind to all interfaces. If this behavior is desired, start the server with --bind_ip 127.0.0.1 to disable this warning
+---
+---
+        Enable MongoDB's free cloud-based monitoring service, which will then receive and display
+        metrics about your deployment (disk utilization, CPU, operation statistics, etc).
+
+        The monitoring data will be available on a MongoDB website with a unique URL accessible to you
+        and anyone you share the URL with. MongoDB may use this information to make product
+        improvements and to suggest MongoDB products and deployment options to you.
+
+        To enable free monitoring, run the following command: db.enableFreeMonitoring()
+        To permanently disable this reminder, run the following command: db.disableFreeMonitoring()
+---
+ksb:SECONDARY>
+
+
+
+
+
+ksb:SECONDARY> rs.slaveOk()
+WARNING: slaveOk() is deprecated and may be removed in the next major release. Please use secondaryOk() instead.
+
+ksb:SECONDARY> rs.secondaryOk()
+
+
+OUTPUT:Now we can see the dbs
+
+	ksb:SECONDARY> show dbs
+	INVOICE  0.000GB
+	admin    0.000GB
+	config   0.000GB
+	local    0.000GB
+	student  0.000GB
+	test     0.000GB	
+
+
+
+
+____________________________________________________________________________________________________
+Step-14  Open new command prompt and connect the server
+
+	 *  To check whether the server is master:
+	    rs.isMaster()
+	    Then it shows true/false value
+__________________________________________________________________________________________________
+__________________________________________________________________________________________________
+
+
+
+C:\Windows\system32>cd C:\Program Files\MongoDB\Server\5.0\bin
+
+C:\Program Files\MongoDB\Server\5.0\bin>mongo --port 27021
+
+
+MongoDB shell version v5.0.2
+connecting to: mongodb://127.0.0.1:27021/?compressors=disabled&gssapiServiceName=mongodb
+Implicit session: session { "id" : UUID("774c7fe1-bfd9-4dc3-8a34-aa7645a1e659") }
+MongoDB server version: 5.0.2
+================
+Warning: the "mongo" shell has been superseded by "mongosh",
+which delivers improved usability and compatibility.The "mongo" shell has been deprecated and will be removed in
+an upcoming release.
+We recommend you begin using "mongosh".
+For installation instructions, see
+https://docs.mongodb.com/mongodb-shell/install/
+================
+---
+The server generated these startup warnings when booting:
+        2021-10-01T20:15:23.322+05:30: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+        2021-10-01T20:15:23.322+05:30: This server is bound to localhost. Remote systems will be unable to connect to this server. Start the server with --bind_ip <address> to specify which IP addresses it should serve responses from, or with --bind_ip_all to bind to all interfaces. If this behavior is desired, start the server with --bind_ip 127.0.0.1 to disable this warning
+---
+---
+        Enable MongoDB's free cloud-based monitoring service, which will then receive and display
+        metrics about your deployment (disk utilization, CPU, operation statistics, etc).
+
+        The monitoring data will be available on a MongoDB website with a unique URL accessible to you
+        and anyone you share the URL with. MongoDB may use this information to make product
+        improvements and to suggest MongoDB products and deployment options to you.
+
+        To enable free monitoring, run the following command: db.enableFreeMonitoring()
+        To permanently disable this reminder, run the following command: db.disableFreeMonitoring()
+---
+ksb:SECONDARY>
+
+
+
+
+ksb:SECONDARY> rs.secondaryOk()
+ksb:SECONDARY> show dbs
+INVOICE  0.000GB
+admin    0.000GB
+config   0.000GB
+local    0.000GB
+student  0.000GB
+test     0.000GB
+
+
+
+
+ksb:SECONDARY> rs.isMaster()
+{
+        "topologyVersion" : {
+                "processId" : ObjectId("61571f0238c1c455d59edeb1"),
+                "counter" : NumberLong(4)
+        },
+        "hosts" : [
+                "localhost:27017",
+                "localhost:27020",
+                "localhost:27021"
+        ],
+        "setName" : "ksb",
+        "setVersion" : 5,
+        "ismaster" : false,
+        "secondary" : true,
+        "primary" : "localhost:27017",
+        "me" : "localhost:27021",
+        "lastWrite" : {
+                "opTime" : {
+                        "ts" : Timestamp(1633101581, 1),
+                        "t" : NumberLong(1)
+                },
+                "lastWriteDate" : ISODate("2021-10-01T15:19:41Z"),
+                "majorityOpTime" : {
+                        "ts" : Timestamp(1633101581, 1),
+                        "t" : NumberLong(1)
+                },
+                "majorityWriteDate" : ISODate("2021-10-01T15:19:41Z")
+        },
+        "maxBsonObjectSize" : 16777216,
+        "maxMessageSizeBytes" : 48000000,
+        "maxWriteBatchSize" : 100000,
+        "localTime" : ISODate("2021-10-01T15:19:49.040Z"),
+        "logicalSessionTimeoutMinutes" : 30,
+        "connectionId" : 32,
+        "minWireVersion" : 0,
+        "maxWireVersion" : 13,
+        "readOnly" : false,
+        "ok" : 1,
+        "$clusterTime" : {
+                "clusterTime" : Timestamp(1633101581, 1),
+                "signature" : {
+                        "hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+                        "keyId" : NumberLong(0)
+                }
+        },
+        "operationTime" : Timestamp(1633101581, 1)
+}
+
+_________________________________________________________________________________________
+Verify the replication
+_________________________________________________________________________________________
+
+IN 27017
+
+ksb:PRIMARY> use INVOICE
+switched to db INVOICE
+ksb:PRIMARY> show collections
+CUSTOMER
+PRODUCT
+ksb:PRIMARY> db.PRODUCT.insert({name:"mango"})
+WriteResult({ "nInserted" : 1 })
+
+
+
+
+IN 27020
+
+ksb:SECONDARY> use INVOICE
+switched to db INVOICE
+ksb:SECONDARY> db.PRODUCT.find()
+{ "_id" : ObjectId("6136202e47b7f4c1ccb85804"), "name" : "bag", "price" : "20" }
+{ "_id" : ObjectId("6136202e47b7f4c1ccb85805"), "name" : "pen", "price" : "10" }
+{ "_id" : ObjectId("6136202e47b7f4c1ccb85806"), "name" : "pencil", "price" : "15" }
+{ "_id" : ObjectId("61572b0fce11243d132e2954"), "name" : "mango" }
+
+In secondary server we can only perform read operations.
+
+
+//verified

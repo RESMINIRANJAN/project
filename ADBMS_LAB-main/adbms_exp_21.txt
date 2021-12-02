@@ -1,0 +1,61 @@
+                                                                          Exp: 21-Mongodb-Aggregate functions
+                                                                        ***************************************
+
+
+1.Write a MongoDB query to sort customer details in ascending order of their name.
+===================================================================================
+
+> use INVOICE
+switched to db INVOICE
+> db.CUSTOMER.find().sort({Name:1}).pretty()
+{
+        "_id" : ObjectId("6140e0663b382d19eb73792e"),
+        "Name" : "Carl",
+        "City" : "Los Santos",
+        "PhNo" : 9066778899,
+        "Age" : 35
+}
+{
+        "_id" : ObjectId("6140e0d03b382d19eb737932"),
+        "Name" : "Iron Man",
+        "City" : "New York",
+        "PhNo" : 7736226677,
+        "Age" : 39
+}
+{
+        "_id" : ObjectId("6140e08d3b382d19eb73792f"),
+        "Name" : "Johnson",
+        "City" : "Los Angels",
+        "PhNo" : 9067564433,
+        "Age" : 55
+}
+{
+        "_id" : ObjectId("6140e0ba3b382d19eb737931"),
+        "Name" : "Peter Parker",
+        "City" : "New York",
+        "PhNo" : 7736226677,
+        "Age" : 28
+}
+
+
+
+2.Write a MongoDB query to count number of customers in each city.
+==================================================================
+
+> db.CUSTOMER.aggregate([{$group:{_id:"$City",Total:{$sum:1}}}])
+{ "_id" : "New York", "Total" : 2 }
+{ "_id" : "Los Angels", "Total" : 1 }
+{ "_id" : "Los Santos", "Total" : 1 }
+
+
+
+3.Write a MongoDB query to find minimum and maximum age in each city.
+=====================================================================
+
+> db.CUSTOMER.aggregate([{$group:{_id:"$City",Min_Age:{$min:"$Age"},Max_Age:{$max:"$Age"}}}])
+{ "_id" : "New York", "Min_Age" : 28, "Max_Age" : 39 }
+{ "_id" : "Los Angels", "Min_Age" : 55, "Max_Age" : 55 }
+{ "_id" : "Los Santos", "Min_Age" : 35, "Max_Age" : 35 }
+>
+
+//verified

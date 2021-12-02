@@ -1,0 +1,146 @@
+mysql> use invoice;
+Database changed
+mysql> SELECT * FROM customer;
++---------+----------------+------------+------------+-----------+
+| cust_id | address        | city       | ph_no      | cust_name |
++---------+----------------+------------+------------+-----------+
+|       1 | west fort      | thrissur   | 8943787650 | carl      |
+|       2 | abc stores     | tvm        |       NULL | johnson   |
+|       3 | xyz enterprise | ernakulam  |       NULL | franklin  |
+|       4 | marine drive   | ernakulam  | 9047656432 | Augustin  |
+|       5 | mg road        | thrissur   | 9846789878 | Ben       |
+|       6 | pattambi       | palakkad   | 7098565538 | anu       |
+|       7 | rgb house      | malappuram | 9046762255 | sagar     |
++---------+----------------+------------+------------+-----------+
+7 rows in set (0.00 sec)
+
+mysql> SELECT * FROM product;
++------+-----------+-------+
+| p_id | pname     | price |
++------+-----------+-------+
+|    1 | notebooks |   200 |
+|    2 | pen       |    50 |
+|    3 | pencil    |    60 |
+|    4 | bottle    |   120 |
+|    5 | bag       |  1200 |
+|    6 | eraser    |    40 |
++------+-----------+-------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT * FROM invoice_master;
++--------+---------+------------+
+| inv_id | cust_id | inv_date   |
++--------+---------+------------+
+|      1 |       1 | 2020-11-06 |
+|      2 |       1 | 2021-01-03 |
+|      3 |       2 | 2021-02-23 |
+|      4 |       2 | 2021-04-20 |
+|      5 |       4 | 2021-05-10 |
+|      7 |       5 | 2021-02-21 |
+|      8 |       6 | 2021-03-01 |
++--------+---------+------------+
+7 rows in set (0.00 sec)
+
+mysql> SELECT * FROM invoice_item;
++--------+------+----------+
+| inv_id | p_id | quantity |
++--------+------+----------+
+|      1 |    2 |        1 |
+|      1 |    5 |        2 |
+|      2 |    4 |        2 |
+|      2 |    5 |        1 |
+|      3 |    5 |        5 |
+|      3 |    4 |        5 |
+|      4 |    2 |        4 |
+|      5 |    6 |        4 |
+|      7 |    5 |        2 |
+|      8 |    6 |        2 |
++--------+------+----------+
+10 rows in set (0.00 sec)
+
+1.List the customer names of invoice date 3rd January 2021.
+============================================================
+mysql> SELECT cust_name FROM customer WHERE cust_id IN (SELECT cust_id FROM invoice_master WHERE inv_date = '2021-01-03');
++-----------+
+| cust_name |
++-----------+
+| carl      |
++-----------+
+1 row in set (0.00 sec)
+
+2.List the product name and price of each invoice item.
+========================================================
+mysql> SELECT pname, price FROM product WHERE p_id IN (SELECT p_id FROM invoice_item);
++--------+-------+
+| pname  | price |
++--------+-------+
+| pen    |    50 |
+| bottle |   120 |
+| bag    |  1200 |
+| eraser |    40 |
++--------+-------+
+4 rows in set (0.00 sec)
+
+3.List the product names, only include their purchased quantity more than 3.
+=============================================================================
+mysql> SELECT pname FROM product WHERE p_id IN (SELECT p_id FROM invoice_item WHERE quantity>3);
++--------+
+| pname  |
++--------+
+| pen    |
+| bottle |
+| bag    |
+| eraser |
++--------+
+4 rows in set (0.00 sec)
+
+4.Find the product that has no sale.
+=====================================
+mysql> SELECT pname FROM product WHERE p_id NOT IN (SELECT p_id FROM invoice_item);
++-----------+
+| pname     |
++-----------+
+| notebooks |
+| pencil    |
++-----------+
+2 rows in set (0.00 sec)
+
+5.List the customer names who purchased the items ‘pen’ and ‘pencil’.
+======================================================================
+mysql> SELECT cust_name FROM customer WHERE cust_id IN (SELECT cust_id FROM invoice_master WHERE inv_id IN (SELECT inv_id FROM invoice_item where p_id IN(SELECT p_id FROM product WHERE pname ='pen') AND(SELECT p_id FROM product WHERE pname='pencil')));
++-----------+
+| cust_name |
++-----------+
+| carl      |
+| johnson   |
++-----------+
+2 rows in set (0.00 sec)
+
+6.Display the purchased product details of the customer 'carl'.
+==============================================================
+mysql> SELECT * FROM product WHERE p_id IN (SELECT p_id FROM invoice_item WHERE inv_id IN(SELECT inv_id FROM invoice_master WHERE cust_id IN(SELECT cust_id FROM customer WHERE cust_name='carl')));
++------+--------+-------+
+| p_id | pname  | price |
++------+--------+-------+
+|    2 | pen    |    50 |
+|    4 | bottle |   120 |
+|    5 | bag    |  1200 |
++------+--------+-------+
+3 rows in set (0.00 sec)
+
+7.List the names of all customers who have purchased at least 2 products, make sure that no duplicate names in the result.
+===========================================================================================================================
+mysql> SELECT distinct cust_name FROM customer WHERE cust_id IN(SELECT cust_id FROM invoice_master WHERE inv_id IN(SELECT inv_id FROM invoice_item WHERE quantity>=2));
++-----------+
+| cust_name |
++-----------+
+| carl      |
+| johnson   |
+| Augustin  |
+| Ben       |
+| anu       |
++-----------+
+5 rows in set (0.00 sec)
+
+
+//verified

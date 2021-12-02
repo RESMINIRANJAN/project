@@ -1,0 +1,120 @@
+1.Create a procedure to display all tables in the invoice database.
+===================================================================
+mysql> use invoice;
+Database changed
+mysql> delimiter //
+mysql> create procedure all_details()
+    -> begin
+    -> select * from customer;
+    -> select * from product;
+    -> select * from invoice_master;
+    -> select * from invoice_item;
+    -> end
+    -> //
+Query OK, 0 rows affected (0.17 sec)
+
+mysql> call all_details()//
++---------+----------------+------------+------------+-----------+
+| cust_id | address        | city       | ph_no      | cust_name |
++---------+----------------+------------+------------+-----------+
+|       1 | west fort      | thrissur   | 8943787650 | carl      |
+|       2 | abc stores     | tvm        |       NULL | johnson   |
+|       3 | xyz enterprise | ernakulam  |       NULL | franklin  |
+|       4 | marine drive   | ernakulam  | 9047656432 | Augustin  |
+|       5 | mg road        | thrissur   | 9846789878 | Ben       |
+|       6 | pattambi       | palakkad   | 7098565538 | anu       |
+|       7 | rgb house      | malappuram | 9046762255 | sagar     |
++---------+----------------+------------+------------+-----------+
+7 rows in set (0.44 sec)
+
++------+-----------+-------+
+| p_id | pname     | price |
++------+-----------+-------+
+|    1 | notebooks |   200 |
+|    2 | pen       |    50 |
+|    3 | pencil    |    60 |
+|    4 | bottle    |   120 |
+|    5 | bag       |  1200 |
+|    6 | eraser    |    40 |
++------+-----------+-------+
+6 rows in set (0.55 sec)
+
++--------+---------+------------+
+| inv_id | cust_id | inv_date   |
++--------+---------+------------+
+|      1 |       1 | 2020-11-06 |
+|      2 |       1 | 2021-01-03 |
+|      3 |       2 | 2021-02-23 |
+|      4 |       2 | 2021-04-20 |
+|      5 |       4 | 2021-05-10 |
+|      7 |       5 | 2021-02-21 |
+|      8 |       6 | 2021-03-01 |
++--------+---------+------------+
+7 rows in set (0.61 sec)
+
++--------+------+----------+
+| inv_id | p_id | quantity |
++--------+------+----------+
+|      1 |    2 |        1 |
+|      1 |    5 |        2 |
+|      2 |    4 |        2 |
+|      2 |    5 |        1 |
+|      3 |    5 |        5 |
+|      3 |    4 |        5 |
+|      4 |    2 |        4 |
+|      5 |    6 |        4 |
+|      7 |    5 |        2 |
+|      8 |    6 |        2 |
++--------+------+----------+
+10 rows in set (0.73 sec)
+
+Query OK, 0 rows affected (0.79 sec)
+
+2.Create a procedure to find greatest of 3 numbers.
+===================================================
+
+mysql> create procedure greatest(x int,y int,z int)
+    -> begin
+    -> if (x>y) and (y>z) then
+    -> select x as 'Greatest number';
+    -> elseif(y>x) and (y>z) then
+    -> select y as 'Greatest number';
+    -> else
+    -> select z as 'Greatest number';
+    -> end if;
+    -> end
+    -> //
+Query OK, 0 rows affected (0.28 sec)
+
+mysql> call greatest(10,30,20)//
++-----------------+
+| Greatest number |
++-----------------+
+|              30 |
++-----------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+3.Create a procedure to display invoice details of a particular customer.
+=========================================================================
+
+mysql> create procedure customerdetails(n varchar(20))
+    -> begin
+    -> declare m varchar(20);
+    -> set m=n;
+    -> select inv_id,inv_date,price*quantity as 'total amount' from customer natural join invoice_item natural join invoice_master natural join product where cust_name=m;
+    -> end
+    -> //
+Query OK, 0 rows affected (0.18 sec)
+
+mysql> call customerdetails('Ben')//
++--------+------------+--------------+
+| inv_id | inv_date   | total amount |
++--------+------------+--------------+
+|      7 | 2021-02-21 |         2400 |
++--------+------------+--------------+
+1 row in set (0.00 sec)
+
+
+//verified

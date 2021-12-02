@@ -1,0 +1,62 @@
+                                   ----------------------------
+                                      EXPERIMENT 18 - CURSOR
+                                   ----------------------------
+
+                                  
+
+1.Write a PL/PQL program to create a name list of customers using CURSOR
+========================================================================= 
+
+mysql> use invoice;
+Database changed
+mysql> select cust_name from customer;
++-----------+
+| cust_name |
++-----------+
+| carl      |
+| johnson   |
+| franklin  |
+| Augustin  |
+| Ben       |
+| anu       |
+| sagar     |
++-----------+
+7 rows in set (0.08 sec)
+
+mysql> delimiter $$
+mysql> create procedure list_names(inout name_list varchar(4000))
+    -> begin
+    -> declare is_done integer default 0;
+    -> declare s_name varchar(100) default "";
+    -> declare cust_cursor cursor for
+    -> select cust_name from customer;
+    -> declare continue handler for not found set is_done=1;
+    -> open cust_cursor;
+    -> get_list:loop
+    -> fetch cust_cursor into s_name;
+    -> if is_done=1 then
+    -> leave get_list;
+    -> end if;
+    -> set name_list=concat(s_name,";",name_list);
+    -> end loop get_list;
+    -> close cust_cursor;
+    -> end$$
+Query OK, 0 rows affected (1.63 sec)
+
+mysql> delimiter ;
+mysql> set @name_list="";
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> call list_names(@name_list);
+Query OK, 0 rows affected (0.15 sec)
+
+mysql> select @name_list;
++-----------------------------------------------+
+| @name_list                                    |
++-----------------------------------------------+
+| sagar;anu;Ben;Augustin;franklin;johnson;carl; |
++-----------------------------------------------+
+1 row in set (0.00 sec)
+
+
+//verified

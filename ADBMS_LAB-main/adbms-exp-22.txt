@@ -1,0 +1,194 @@
+1.Write a MongoDB query to create a user “CUSTOMER1” and
+  grant the read role in the INVOICE database.
+=========================================================
+
+db.createUser({user:"CUSTOMER1",pwd:"customer1",roles:[{role:"read",db:"INVOICE"}]})
+Successfully added user: {
+        "user" : "CUSTOMER1",
+        "roles" : [
+                {
+                        "role" : "read",
+                        "db" : "INVOICE"
+                }
+        ]
+}
+> exit
+bye
+
+
+
+
+
+
+2.Write a MongoDB query to create the backup for the INVOICE database.
+======================================================================
+
+_____________________________________________________
+
+Step 1: Open a command prompt and  run mongo instance
+-----------------------------------------------------
+
+C:\Users\varun>cd C:\Program Files\MongoDB\Server\5.0\bin
+
+C:\Program Files\MongoDB\Server\5.0\bin>mongod
+{"t":{"$date":"2021-09-28T13:34:56.517+05:30"},"s":"I",  "c":"NETWORK",  "id":4915701, "ctx":"-","msg":"Initialized wire specification","attr":{"spec":{"incomingExternalClient":{"minWireVersion":0,"maxWireVersion":13},"incomingInternalClient":{"minWireVersion":0,"maxWireVersion":13},"outgoing":{"minWireVersion":0,"maxWireVersion":13},"isInternalClient":true}}}
+{"t":{"$date":"2021-09-28T13:34:56.519+05:30"},"s":"I",  "c":"CONTROL",  "id":23285,   "ctx":"-","msg":"Automatically disabling TLS 1.0, to force-enable TLS 1.0 specify --sslDisabledProtocols 'none'"}
+{"t":{"$date":"2021-09-28T13:34:57.355+05:30"},"s":"W",  "c":"ASIO",     "id":22601,   "ctx":"main","msg":"No TransportLayer configured during NetworkInterface startup"}
+{"t":{"$date":"2021-09-28T13:34:57.355+05:30"},"s":"I",  "c":"NETWORK",  "id":4648602, "ctx":"main","msg":"Implicit TCP FastOpen in use."}
+{"t":{"$date":"2021-09-28T13:34:57.361+05:30"},"s":"W",  "c":"ASIO",     "id":22601,   "ctx":"main","msg":"No TransportLayer configured during NetworkInterface startup"}
+{"t":{"$date":"2021-09-28T13:34:57.361+05:30"},"s":"I",  "c":"REPL",     "id":5123008, "ctx":"main","msg":"Successfully registered PrimaryOnlyService","attr":{"service":"TenantMigrationDonorService","ns":"config.tenantMigrationDonors"}}
+{"t":{"$date":"2021-09-28T13:34:57.361+05:30"},"s":"I",  "c":"REPL",     "id":5123008, "ctx":"main","msg":"Successfully registered PrimaryOnlyService","attr":{"service":"TenantMigrationRecipientService","ns":"config.tenantMigrationRecipients"}}
+{"t":{"$date":"2021-09-28T13:34:57.365+05:30"},"s":"I",  "c":"CONTROL",  "id":4615611, "ctx":"initandlisten","msg":"MongoDB starting","attr":{"pid":19204,"port":27017,"dbPath":"C:/data/db/","architecture":"64-bit","host":"Varun"}}
+{"t":{"$date":"2021-09-28T13:34:57.365+05:30"},"s":"I",  "c":"CONTROL",  "id":23398,   "ctx":"initandlisten","msg":"Target operating system minimum version","attr":{"targetMinOS":"Windows 7/Windows Server 2008 R2"}}
+{"t":{"$date":"2021-09-28T13:34:57.365+05:30"},"s":"I",  "c":"CONTROL",  "id":23403,   "ctx":"initandlisten","msg":"Build Info","attr":{"buildInfo":{"version":"5.0.2","gitVersion":"6d9ec525e78465dcecadcff99cce953d380fedc8","modules":[],"allocator":"tcmalloc","environment":{"distmod":"windows","distarch":"x86_64","target_arch":"x86_64"}}}}
+{"t":{"$date":"2021-09-28T13:34:57.365+05:30"},"s":"I",  "c":"CONTROL",  "id":51765,   "ctx":"initandlisten","msg":"Operating System","attr":{"os":{"name":"Microsoft Windows 10","version":"10.0 (build 19043)"}}}
+{"t":{"$date":"2021-09-28T13:34:57.366+05:30"},"s":"I",  "c":"CONTROL",  "id":21951,   "ctx":"initandlisten","msg":"Options set by command line","attr":{"options":{}}}
+{"t":{"$date":"2021-09-28T13:34:57.383+05:30"},"s":"I",  "c":"STORAGE",  "id":22270,   "ctx":"initandlisten","msg":"Storage engine to use detected by data files","attr":{"dbpath":"C:/data/db/","storageEngine":"wiredTiger"}}
+{"t":{"$date":"2021-09-28T13:34:57.385+05:30"},"s":"I",  "c":"STORAGE",  "id":22315,   "ctx":"initandlisten","msg":"Opening WiredTiger","attr":{"config":"create,cache_size=2498M,session_max=33000,eviction=(threads_min=4,threads_max=4),config_base=false,statistics=(fast),log=(enabled=true,archive=true,path=journal,compressor=snappy),builtin_extension_config=(zstd=(compression_level=6)),file_manager=(close_idle_time=600,close_scan_interval=10,close_handle_minimum=250),statistics_log=(wait=0),verbose=[recovery_progress,checkpoint_progress,compact_progress],"}}
+{"t":{"$date":"2021-09-28T13:34:57.789+05:30"},"s":"I",  "c":"STORAGE",  "id":22430,   "ctx":"initandlisten","msg":"WiredTiger message","attr":{"message":"[1632816297:788674][19204:140706008290640], txn-recover: [WT_VERB_RECOVERY_PROGRESS] Recovering log 5 through 6"}}
+{"t":{"$date":"2021-09-28T13:34:57.953+05:30"},"s":"I",  "c":"STORAGE",  "id":22430,   "ctx":"initandlisten","msg":"WiredTiger message","attr":{"message":"[1632816297:952674][19204:140706008290640], txn-recover: [WT_VERB_RECOVERY_PROGRESS] Recovering log 6 through 6"}}
+{"t":{"$date":"2021-09-28T13:34:58.150+05:30"},"s":"I",  "c":"STORAGE",  "id":22430,   "ctx":"initandlisten","msg":"WiredTiger message","attr":{"message":"[1632816298:150595][19204:140706008290640], txn-recover: [WT_VERB_RECOVERY | WT_VERB_RECOVERY_PROGRESS] Main recovery loop: starting at 5/56576 to 6/256"}}
+{"t":{"$date":"2021-09-28T13:34:58.375+05:30"},"s":"I",  "c":"STORAGE",  "id":22430,   "ctx":"initandlisten","msg":"WiredTiger message","attr":{"message":"[1632816298:374592][19204:140706008290640], txn-recover: [WT_VERB_RECOVERY_PROGRESS] Recovering log 5 through 6"}}
+{"t":{"$date":"2021-09-28T13:34:58.561+05:30"},"s":"I",  "c":"STORAGE",  "id":22430,   "ctx":"initandlisten","msg":"WiredTiger message","attr":{"message":"[1632816298:560783][19204:140706008290640], txn-recover: [WT_VERB_RECOVERY_PROGRESS] Recovering log 6 through 6"}}
+{"t":{"$date":"2021-09-28T13:34:58.693+05:30"},"s":"I",  "c":"STORAGE",  "id":22430,   "ctx":"initandlisten","msg":"WiredTiger message","attr":{"message":"[1632816298:692836][19204:140706008290640], txn-recover: [WT_VERB_RECOVERY | WT_VERB_RECOVERY_PROGRESS] Set global recovery timestamp: (0, 0)"}}
+{"t":{"$date":"2021-09-28T13:34:58.693+05:30"},"s":"I",  "c":"STORAGE",  "id":22430,   "ctx":"initandlisten","msg":"WiredTiger message","attr":{"message":"[1632816298:693803][19204:140706008290640], txn-recover: [WT_VERB_RECOVERY | WT_VERB_RECOVERY_PROGRESS] Set global oldest timestamp: (0, 0)"}}
+{"t":{"$date":"2021-09-28T13:34:58.699+05:30"},"s":"I",  "c":"STORAGE",  "id":22430,   "ctx":"initandlisten","msg":"WiredTiger message","attr":{"message":"[1632816298:698801][19204:140706008290640], WT_SESSION.checkpoint: [WT_VERB_CHECKPOINT_PROGRESS] saving checkpoint snapshot min: 1, snapshot max: 1 snapshot count: 0, oldest timestamp: (0, 0) , meta checkpoint timestamp: (0, 0) base write gen: 260"}}
+{"t":{"$date":"2021-09-28T13:34:58.928+05:30"},"s":"I",  "c":"STORAGE",  "id":4795906, "ctx":"initandlisten","msg":"WiredTiger opened","attr":{"durationMillis":1543}}
+{"t":{"$date":"2021-09-28T13:34:58.928+05:30"},"s":"I",  "c":"RECOVERY", "id":23987,   "ctx":"initandlisten","msg":"WiredTiger recoveryTimestamp","attr":{"recoveryTimestamp":{"$timestamp":{"t":0,"i":0}}}}
+{"t":{"$date":"2021-09-28T13:34:59.064+05:30"},"s":"I",  "c":"STORAGE",  "id":4366408, "ctx":"initandlisten","msg":"No table logging settings modifications are required for existing WiredTiger tables","attr":{"loggingEnabled":true}}
+{"t":{"$date":"2021-09-28T13:34:59.152+05:30"},"s":"I",  "c":"STORAGE",  "id":22262,   "ctx":"initandlisten","msg":"Timestamp monitor starting"}
+{"t":{"$date":"2021-09-28T13:34:59.249+05:30"},"s":"W",  "c":"CONTROL",  "id":22120,   "ctx":"initandlisten","msg":"Access control is not enabled for the database. Read and write access to data and configuration is unrestricted","tags":["startupWarnings"]}
+{"t":{"$date":"2021-09-28T13:34:59.249+05:30"},"s":"W",  "c":"CONTROL",  "id":22140,   "ctx":"initandlisten","msg":"This server is bound to localhost. Remote systems will be unable to connect to this server. Start the server with --bind_ip <address> to specify which IP addresses it should serve responses from, or with --bind_ip_all to bind to all interfaces. If this behavior is desired, start the server with --bind_ip 127.0.0.1 to disable this warning","tags":["startupWarnings"]}
+{"t":{"$date":"2021-09-28T13:34:59.372+05:30"},"s":"I",  "c":"NETWORK",  "id":4915702, "ctx":"initandlisten","msg":"Updated wire specification","attr":{"oldSpec":{"incomingExternalClient":{"minWireVersion":0,"maxWireVersion":13},"incomingInternalClient":{"minWireVersion":0,"maxWireVersion":13},"outgoing":{"minWireVersion":0,"maxWireVersion":13},"isInternalClient":true},"newSpec":{"incomingExternalClient":{"minWireVersion":0,"maxWireVersion":13},"incomingInternalClient":{"minWireVersion":13,"maxWireVersion":13},"outgoing":{"minWireVersion":13,"maxWireVersion":13},"isInternalClient":true}}}
+{"t":{"$date":"2021-09-28T13:34:59.374+05:30"},"s":"I",  "c":"STORAGE",  "id":5071100, "ctx":"initandlisten","msg":"Clearing temp directory"}
+{"t":{"$date":"2021-09-28T13:34:59.377+05:30"},"s":"I",  "c":"CONTROL",  "id":20536,   "ctx":"initandlisten","msg":"Flow Control is enabled on this deployment"}
+{"t":{"$date":"2021-09-28T13:35:00.930+05:30"},"s":"I",  "c":"FTDC",     "id":20625,   "ctx":"initandlisten","msg":"Initializing full-time diagnostic data capture","attr":{"dataDirectory":"C:/data/db/diagnostic.data"}}
+{"t":{"$date":"2021-09-28T13:35:01.044+05:30"},"s":"I",  "c":"NETWORK",  "id":23015,   "ctx":"listener","msg":"Listening on","attr":{"address":"127.0.0.1"}}
+{"t":{"$date":"2021-09-28T13:35:01.045+05:30"},"s":"I",  "c":"NETWORK",  "id":23016,   "ctx":"listener","msg":"Waiting for connections","attr":{"port":27017,"ssl":"off"}}
+{"t":{"$date":"2021-09-28T13:35:59.257+05:30"},"s":"I",  "c":"STORAGE",  "id":22430,   "ctx":"Checkpointer","msg":"WiredTiger message","attr":{"message":"[1632816359:256144][19204:140706008290640], WT_SESSION.checkpoint: [WT_VERB_CHECKPOINT_PROGRESS] saving checkpoint snapshot min: 3, snapshot max: 3 snapshot count: 0, oldest timestamp: (0, 0) , meta checkpoint timestamp: (0, 0) base write gen: 261"}}
+
+
+_______________________________________________________
+
+Step 2 : Open another command prompt and run mongo shell
+-------------------------------------------------------
+
+C:\Users\varun>cd C:\Program Files\MongoDB\Server\5.0\bin
+
+C:\Program Files\MongoDB\Server\5.0\bin>mongo
+MongoDB shell version v5.0.2
+connecting to: mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb
+Implicit session: session { "id" : UUID("91979e13-21e2-4539-8725-f970c637ea83") }
+MongoDB server version: 5.0.2
+================
+Warning: the "mongo" shell has been superseded by "mongosh",
+which delivers improved usability and compatibility.The "mongo" shell has been deprecated and will be removed in
+an upcoming release.
+We recommend you begin using "mongosh".
+For installation instructions, see
+https://docs.mongodb.com/mongodb-shell/install/
+================
+---
+The server generated these startup warnings when booting:
+        2021-09-20T13:13:02.538+05:30: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+---
+---
+        Enable MongoDB's free cloud-based monitoring service, which will then receive and display
+        metrics about your deployment (disk utilization, CPU, operation statistics, etc).
+
+        The monitoring data will be available on a MongoDB website with a unique URL accessible to you
+        and anyone you share the URL with. MongoDB may use this information to make product
+        improvements and to suggest MongoDB products and deployment options to you.
+
+        To enable free monitoring, run the following command: db.enableFreeMonitoring()
+        To permanently disable this reminder, run the following command: db.disableFreeMonitoring()
+---
+>
+
+__________________________________________________________________________________________
+
+Step 3 : Open another command propmt as Administrator and set mongo path and run mongodump
+------------------------------------------------------------------------------------------
+
+C:\windows\system32>cd C:\Program Files\MongoDB\Server\5.0\bin
+
+C:\Program Files\MongoDB\Server\5.0\bin>mongodump
+2021-09-28T13:47:28.723+0530    writing admin.system.users to dump\admin\system.users.bson
+2021-09-28T13:47:28.729+0530    done dumping admin.system.users (2 documents)
+2021-09-28T13:47:28.731+0530    writing admin.system.version to dump\admin\system.version.bson
+2021-09-28T13:47:28.735+0530    done dumping admin.system.version (2 documents)
+2021-09-28T13:47:28.736+0530    writing INVOICE.CUSTOMER to dump\INVOICE\CUSTOMER.bson
+2021-09-28T13:47:28.740+0530    done dumping INVOICE.CUSTOMER (4 documents)
+2021-09-28T13:47:29.052+0530    writing INVOICE.PRODUCT to dump\INVOICE\PRODUCT.bson
+2021-09-28T13:47:29.056+0530    done dumping INVOICE.PRODUCT (4 documents)
+
+=========
+ OUTPUT
+=========
+
+--> Inside the bin folder it creates a automatically a folder named 'dump'.
+
+--> Insid the dump folder, it contains all the databases.
+
+--> Drop the dump folder . We need to start backup the INVOICE database again.
+
+_________________________________
+
+Step 4 : Reopen Administrator cmd
+---------------------------------
+
+C:\Program Files\MongoDB\Server\5.0\bin> mongodump --db INVOICE
+2021-09-28T14:15:30.062+0530    writing INVOICE.CUSTOMER to dump\INVOICE\CUSTOMER.bson
+2021-09-28T14:15:30.068+0530    done dumping INVOICE.CUSTOMER (4 documents)
+2021-09-28T14:15:30.359+0530    writing INVOICE.PRODUCT to dump\INVOICE\PRODUCT.bson
+2021-09-28T14:15:30.363+0530    done dumping INVOICE.PRODUCT (4 documents)
+
+
+
+
+
+
+3.Write a MongoDB query to restore a particular collection.
+===========================================================
+
+--> Here restoring collection 'PRODUCT'
+--> Backuping PRODUCT 
+
+C:\Program Files\MongoDB\Server\5.0\bin>mongodump --db INVOICE --collection PRODUCT
+2021-09-28T14:23:28.914+0530    writing INVOICE.PRODUCT to dump\INVOICE\PRODUCT.bson
+2021-09-28T14:23:28.920+0530    done dumping INVOICE.PRODUCT (4 documents)
+
+--> Droping collection PRODUCT and then we need to restore it agian
+
+> use INVOICE
+switched to db INVOICE
+> show collections
+CUSTOMER
+PRODUCT
+> db.PRODUCT.drop()
+true
+> show collections
+CUSTOMER
+
+________________________________
+--> Restoring collection PRODUCT
+________________________________
+
+--> Switch to administrator cmd
+
+C:\Program Files\MongoDB\Server\5.0\bin>mongorestore --db INVOICE --collection PRODUCT ./dump/INVOICE/PRODUCT.bson
+2021-09-28T14:35:15.108+0530    checking for collection data in dump\INVOICE\PRODUCT.bson
+2021-09-28T14:35:15.122+0530    reading metadata for INVOICE.PRODUCT from dump\INVOICE\PRODUCT.metadata.json
+2021-09-28T14:35:15.868+0530    restoring INVOICE.PRODUCT from dump\INVOICE\PRODUCT.bson
+2021-09-28T14:35:16.088+0530    finished restoring INVOICE.PRODUCT (4 documents, 0 failures)
+2021-09-28T14:35:16.088+0530    no indexes to restore for collection INVOICE.PRODUCT
+2021-09-28T14:35:16.093+0530    4 document(s) restored successfully. 0 document(s) failed to restore.
+
+> show collections
+CUSTOMER
+PRODUCT
+
+--> collection 'PRODUCT'  has restored.
+
+
+   //verified

@@ -1,0 +1,121 @@
+
+                                                                            Exp No:19- CRUD operations
+                                                                          ******************************
+
+
+1.Write a MongoDB query to create an INVOICE database and collections (CUSTOMER, PRODUCT) and its corresponding documents.
+==========================================================================================================================
+
+> db.dropDatabase()
+{ "ok" : 1 }
+> use INVOICE
+switched to db INVOICE
+> db.createCollection("CUSTOMER")
+{ "ok" : 1 }
+> db.createCollection("PRODUCT")
+{ "ok" : 1 }
+> db.CUSTOMER.insert({"Name":"Carl","City":"Los Santos","PhNo":9066778899,"Age":35})
+WriteResult({ "nInserted" : 1 })
+> db.CUSTOMER.insert({"Name":"Johnson","City":"Las Vegas","PhNo":9067564433,"Age":55})
+WriteResult({ "nInserted" : 1 })
+> db.CUSTOMER.insert({"Name":"Krish","City":"Calicut","PhNo":8900787866,"Age":40})
+WriteResult({ "nInserted" : 1 })
+> db.CUSTOMER.insert({"Name":"Peter Parker","City":"New York","PhNo":7736226677,"Age":28})
+WriteResult({ "nInserted" : 1 })
+> db.CUSTOMER.insert({"Name":"Iron Man","City":"New York","PhNo":7736226677,"Age":39})
+WriteResult({ "nInserted" : 1 })
+>
+>
+>
+>
+> db.PRODUCT.insertMany([
+... ... {Pname:"Pencil",Price:"5"},
+... ... {Pname:"Book",Price:"30"},
+... ... {Pname:"Pen",Price:"10"},
+... ... {Pname:"Marker",Price:"15"}
+... ... ])
+{
+        "acknowledged" : true,
+        "insertedIds" : [
+                ObjectId("6140e1213b382d19eb737933"),
+                ObjectId("6140e1213b382d19eb737934"),
+                ObjectId("6140e1213b382d19eb737935"),
+                ObjectId("6140e1213b382d19eb737936")
+        ]
+}
+
+2.Write a MongoDB query to find all documents from the collection CUSTOMER
+==========================================================================
+
+> db.CUSTOMER.find().pretty()
+{
+        "_id" : ObjectId("6140e0663b382d19eb73792e"),
+        "Name" : "Carl",
+        "City" : "Los Santos",
+        "PhNo" : 9066778899,
+        "Age" : 35
+}
+{
+        "_id" : ObjectId("6140e08d3b382d19eb73792f"),
+        "Name" : "Johnson",
+        "City" : "Las Vegas",
+        "PhNo" : 9067564433,
+        "Age" : 55
+}
+{
+        "_id" : ObjectId("6140e0a43b382d19eb737930"),
+        "Name" : "Krish",
+        "City" : "Calicut",
+        "PhNo" : 8900787866,
+        "Age" : 40
+}
+{
+        "_id" : ObjectId("6140e0ba3b382d19eb737931"),
+        "Name" : "Peter Parker",
+        "City" : "New York",
+        "PhNo" : 7736226677,
+        "Age" : 28
+}
+{
+        "_id" : ObjectId("6140e0d03b382d19eb737932"),
+        "Name" : "Iron Man",
+        "City" : "New York",
+        "PhNo" : 7736226677,
+        "Age" : 39
+}
+
+
+
+
+3.Write a MongoDB query to update the city in the collection CUSTOMER.
+======================================================================
+
+> db.CUSTOMER.update({City:"Las Vegas"},{$set:{City:"Los Angels"}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+>
+>
+> db.CUSTOMER.findOne({City:"Los Angels"})
+{
+        "_id" : ObjectId("6140e08d3b382d19eb73792f"),
+        "Name" : "Johnson",
+        "City" : "Los Angels",
+        "PhNo" : 9067564433,
+        "Age" : 55
+}
+
+
+
+
+4.Write a MongoDB query to delete the first matched document whose city is “Calicut”
+====================================================================================
+
+> db.CUSTOMER.deleteOne({City:"Calicut"})
+{ "acknowledged" : true, "deletedCount" : 1 }
+> db.CUSTOMER.find()
+{ "_id" : ObjectId("6140e0663b382d19eb73792e"), "Name" : "Carl", "City" : "Los Santos", "PhNo" : 9066778899, "Age" : 35 }
+{ "_id" : ObjectId("6140e08d3b382d19eb73792f"), "Name" : "Johnson", "City" : "Los Angels", "PhNo" : 9067564433, "Age" : 55 }
+{ "_id" : ObjectId("6140e0ba3b382d19eb737931"), "Name" : "Peter Parker", "City" : "New York", "PhNo" : 7736226677, "Age" : 28 }
+{ "_id" : ObjectId("6140e0d03b382d19eb737932"), "Name" : "Iron Man", "City" : "New York", "PhNo" : 7736226677, "Age" : 39 }
+>
+
+//verified

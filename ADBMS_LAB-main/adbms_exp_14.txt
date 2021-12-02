@@ -1,0 +1,63 @@
+mysql> use invoice;
+Database changed
+
+1.Display all customer id and product id using set operations.
+===============================================================
+mysql> select cust_id as 'id' from customer union all select p_id from product;
++----+
+| id |
++----+
+|  1 |
+|  2 |
+|  3 |
+|  4 |
+|  5 |
+|  6 |
+|  7 |
+|  1 |
+|  2 |
+|  3 |
+|  4 |
+|  5 |
+|  6 |
++----+
+13 rows in set (0.24 sec)
+
+2.Dispaly product details with an updated price amount(new price=old price+5rs)
+===============================================================================
+mysql> select p_id,pname,price+5 as 'new price' from product;
++------+-----------+-----------+
+| p_id | pname     | new price |
++------+-----------+-----------+
+|    1 | notebooks |       205 |
+|    2 | pen       |        55 |
+|    3 | pencil    |        65 |
+|    4 | bottle    |       125 |
+|    5 | bag       |      1205 |
+|    6 | eraser    |        45 |
++------+-----------+-----------+
+6 rows in set (0.10 sec)
+
+3.Display customer details who doesn't have phone number and lives in 'ernakulam' city(use logical operators).
+==============================================================================================================
+mysql> select * from customer where city='ernakulam' and ph_no is null;
++---------+----------------+-----------+-------+-----------+
+| cust_id | address        | city      | ph_no | cust_name |
++---------+----------------+-----------+-------+-----------+
+|       3 | xyz enterprise | ernakulam |  NULL | franklin  |
++---------+----------------+-----------+-------+-----------+
+1 row in set (0.01 sec)
+
+4.List the product names if it finds any records in the invoice items table has quantity=5(use special operators).
+==================================================================================================================
+mysql> select pname from product where p_id in(select p_id from invoice_item where quantity=5);
++--------+
+| pname  |
++--------+
+| bottle |
+| bag    |
++--------+
+2 rows in set (0.16 sec)
+
+
+//verified

@@ -1,0 +1,110 @@
+mysql> use invoice;
+Database changed
+mysql> select * from product;
++------+-----------+-------+
+| p_id | pname     | price |
++------+-----------+-------+
+|    1 | notebooks |   200 |
+|    2 | pen       |    50 |
+|    3 | pencil    |    60 |
+|    4 | bottle    |   120 |
+|    5 | bag       |  1200 |
+|    6 | eraser    |    40 |
++------+-----------+-------+
+6 rows in set (0.15 sec)
+
+1.List product name, price except pen on price order.
+=======================================================
+mysql> select pname,price from product where pname!='pen';
++-----------+-------+
+| pname     | price |
++-----------+-------+
+| notebooks |   200 |
+| pencil    |    60 |
+| bottle    |   120 |
+| bag       |  1200 |
+| eraser    |    40 |
++-----------+-------+
+5 rows in set (0.10 sec)
+
+2.Find minimum, maximum and average price of products.  ///CORRECT IT
+=======================================================
+mysql> select min(price) from product;
++------------+
+| min(price) |
++------------+
+|         40 |
++------------+
+1 row in set (0.39 sec)
+
+mysql> select max(price) from product;
++------------+
+| max(price) |
++------------+
+|       1200 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select avg(price) from product;
++------------+
+| avg(price) |
++------------+
+|   278.3333 |
++------------+
+1 row in set (0.00 sec)
+
+3.Find number of customers in each city.
+=========================================
+mysql> select city,count(city) as count from customer group by city;
++------------+-------+
+| city       | count |
++------------+-------+
+| thrissur   |     2 |
+| tvm        |     1 |
+| ernakulam  |     2 |
+| palakkad   |     1 |
+| malappuram |     1 |
++------------+-------+
+5 rows in set (0.04 sec)
+
+4.Find number of customers in each city, only include city with more than 1 customers.
+========================================================================================
+mysql> select city,count(city) as count from customer group by city having count(city)>1;
++-----------+-------+
+| city      | count |
++-----------+-------+
+| thrissur  |     2 |
+| ernakulam |     2 |
++-----------+-------+
+2 rows in set (0.00 sec)
+
+
+mysql> select * from customer;
++---------+----------------+------------+------------+-----------+
+| cust_id | address        | city       | ph_no      | cust_name |
++---------+----------------+------------+------------+-----------+
+|       1 | west fort      | thrissur   | 8943787650 | carl      |
+|       2 | abc stores     | tvm        |       NULL | johnson   |
+|       3 | xyz enterprise | ernakulam  |       NULL | franklin  |
+|       4 | marine drive   | ernakulam  | 9047656432 | Augustin  |
+|       5 | mg road        | thrissur   | 9846789878 | Ben       |
+|       6 | pattambi       | palakkad   | 7098565538 | anu       |
+|       7 | rgb house      | malappuram | 9046762255 | sagar     |
++---------+----------------+------------+------------+-----------+
+7 rows in set (0.00 sec)
+
+5.Show data as displayed ‘who, where’ Eg: ‘customer1 lives in ekm’.
+====================================================================
+mysql> select concat(cust_name," lives in ",city) as 'who, where' from customer;
++-----------------------------+
+| who, where                  |
++-----------------------------+
+| carl lives in thrissur      |
+| johnson lives in tvm        |
+| franklin lives in ernakulam |
+| Augustin lives in ernakulam |
+| Ben lives in thrissur       |
+| anu lives in palakkad       |
+| sagar lives in malappuram   |
++-----------------------------+
+7 rows in set (0.00 sec)

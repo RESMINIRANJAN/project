@@ -1,0 +1,121 @@
+
+1.Create a trigger to handle updates to the customer table.
+============================================================
+
+mysql> use invoice;
+Database changed
+mysql> desc customer;
++-----------+-------------+------+-----+---------+----------------+
+| Field     | Type        | Null | Key | Default | Extra          |
++-----------+-------------+------+-----+---------+----------------+
+| cust_id   | int         | NO   | PRI | NULL    | auto_increment |
+| address   | varchar(50) | YES  |     | NULL    |                |
+| city      | varchar(20) | YES  |     | NULL    |                |
+| ph_no     | bigint      | YES  |     | NULL    |                |
+| cust_name | varchar(20) | YES  |     | NULL    |                |
++-----------+-------------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> create table customer_update(up_id int primary key auto_increment,cust_id int,address varchar(50),city varchar(20),ph_no bigint,cust_name varchar(20));
+Query OK, 0 rows affected (1.87 sec)
+
+mysql> delimiter //
+mysql> create trigger cust_updates
+    -> after update
+    -> on customer for each row
+    -> begin
+    -> insert into customer_update
+    -> set cust_id=old.cust_id,address=old.address,city=old.city,ph_no=old.ph_no,cust_name=old.cust_name;
+    -> end
+    -> //
+Query OK, 0 rows affected (0.36 sec)
+
+mysql> delimiter ;
+mysql> select * from customer;
++---------+----------------+------------+------------+-----------+
+| cust_id | address        | city       | ph_no      | cust_name |
++---------+----------------+------------+------------+-----------+
+|       1 | west fort      | thrissur   | 8943787650 | carl      |
+|       2 | abc stores     | tvm        |       NULL | johnson   |
+|       3 | xyz enterprise | ernakulam  |       NULL | franklin  |
+|       4 | marine drive   | ernakulam  | 9047656432 | Augustin  |
+|       5 | mg road        | thrissur   | 9846789878 | Ben       |
+|       6 | pattambi       | palakkad   | 7098565538 | anu       |
+|       7 | rgb house      | malappuram | 9046762255 | sagar     |
++---------+----------------+------------+------------+-----------+
+7 rows in set (0.00 sec)
+
+mysql> update customer set city="calicut" where cust_id=7;
+Query OK, 1 row affected (0.36 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from customer;
++---------+----------------+-----------+------------+-----------+
+| cust_id | address        | city      | ph_no      | cust_name |
++---------+----------------+-----------+------------+-----------+
+|       1 | west fort      | thrissur  | 8943787650 | carl      |
+|       2 | abc stores     | tvm       |       NULL | johnson   |
+|       3 | xyz enterprise | ernakulam |       NULL | franklin  |
+|       4 | marine drive   | ernakulam | 9047656432 | Augustin  |
+|       5 | mg road        | thrissur  | 9846789878 | Ben       |
+|       6 | pattambi       | palakkad  | 7098565538 | anu       |
+|       7 | rgb house      | calicut   | 9046762255 | sagar     |
++---------+----------------+-----------+------------+-----------+
+7 rows in set (0.00 sec)
+
+mysql> select * from customer_update;
++-------+---------+-----------+------------+------------+-----------+
+| up_id | cust_id | address   | city       | ph_no      | cust_name |
++-------+---------+-----------+------------+------------+-----------+
+|     1 |       7 | rgb house | malappuram | 9046762255 | sagar     |
++-------+---------+-----------+------------+------------+-----------+
+1 row in set (0.00 sec)
+
+mysql>
+
+2.Create a trigger to handle inserts to the product relation ( if price<5 then set price to 10).
+=================================================================================================
+mysql> select  * from product;
++------+-----------+-------+
+| p_id | pname     | price |
++------+-----------+-------+
+|    1 | notebooks |   200 |
+|    2 | pen       |    50 |
+|    3 | pencil    |    60 |
+|    4 | bottle    |   120 |
+|    5 | bag       |  1200 |
+|    6 | eraser    |    40 |
++------+-----------+-------+
+6 rows in set (0.24 sec)
+
+mysql> delimiter //
+mysql> create trigger min_price
+    -> before insert
+    -> on product for each row
+    -> begin
+    -> if new.price<5 then
+    -> set new.price=10;
+    -> end if;
+    -> end;
+    -> //
+Query OK, 0 rows affected (0.15 sec)
+
+mysql> delimiter ;
+mysql> insert into product values(7,'sharpner',3);
+Query OK, 1 row affected (0.15 sec)
+
+mysql> select * from product;
++------+-----------+-------+
+| p_id | pname     | price |
++------+-----------+-------+
+|    1 | notebooks |   200 |
+|    2 | pen       |    50 |
+|    3 | pencil    |    60 |
+|    4 | bottle    |   120 |
+|    5 | bag       |  1200 |
+|    6 | eraser    |    40 |
+|    7 | sharpner  |    10 |
++------+-----------+-------+
+7 rows in set (0.00 sec)
+
+//verified

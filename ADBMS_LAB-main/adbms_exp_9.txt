@@ -1,0 +1,214 @@
+mysql> use invoice;
+Database changed
+mysql> show tables;
++-------------------+
+| Tables_in_invoice |
++-------------------+
+| customer          |
+| invoice_item      |
+| invoice_master    |
+| product           |
++-------------------+
+4 rows in set (0.01 sec)
+
+1.List all customer details.
+=============================
+mysql> select * from customer;
++---------+----------------+------------+------------+-----------+
+| cust_id | address        | city       | ph_no      | cust_name |
++---------+----------------+------------+------------+-----------+
+|       1 | west fort      | thrissur   | 8943787650 | carl      |
+|       2 | abc stores     | tvm        |       NULL | johnson   |
+|       3 | xyz enterprise | ernakulam  |       NULL | franklin  |
+|       4 | marine drive   | ernakulam  | 9047656432 | Augustin  |
+|       5 | mg road        | thrissur   | 9846789878 | Ben       |
+|       6 | pattambi       | palakkad   | 7098565538 | anu       |
+|       7 | rgb house      | malappuram | 9046762255 | sagar     |
++---------+----------------+------------+------------+-----------+
+7 rows in set (0.00 sec)
+
+2.List pname,price of all products.
+====================================
+mysql> select pname,price from product;
++-----------+-------+
+| pname     | price |
++-----------+-------+
+| notebooks |   200 |
+| pen       |    50 |
+| pencil    |    60 |
+| bottle    |   120 |
+| bag       |  1200 |
+| eraser    |    40 |
++-----------+-------+
+6 rows in set (0.00 sec)
+
+3.List all invoice items, avoid duplicates.
+=============================================
+mysql> select distinct p_id from invoice_item;
++------+
+| p_id |
++------+
+|    2 |
+|    4 |
+|    5 |
+|    6 |
++------+
+4 rows in set (0.00 sec)
+
+4.List product price between 50rs and 150rs.
+=============================================
+mysql> select pname,price from product where price between 50 and 150;
++--------+-------+
+| pname  | price |
++--------+-------+
+| pen    |    50 |
+| pencil |    60 |
+| bottle |   120 |
++--------+-------+
+3 rows in set (0.00 sec)
+
+5.List the customer details who lives in ‘ernakulam’,’tvm’.
+=============================================================
+mysql> select * from customer where city='ernakulam' or city='tvm';
++---------+----------------+-----------+------------+-----------+
+| cust_id | address        | city      | ph_no      | cust_name |
++---------+----------------+-----------+------------+-----------+
+|       2 | abc stores     | tvm       |       NULL | johnson   |
+|       3 | xyz enterprise | ernakulam |       NULL | franklin  |
+|       4 | marine drive   | ernakulam | 9047656432 | Augustin  |
++---------+----------------+-----------+------------+-----------+
+3 rows in set (0.00 sec)
+
+6.List the invoice details from 1st January 2021 to 31st march 2021
+=====================================================================
+mysql> select * from invoice_master where inv_date between '2021-01-01' and '2021-03-31';
++--------+---------+------------+
+| inv_id | cust_id | inv_date   |
++--------+---------+------------+
+|      2 |       1 | 2021-01-03 |
+|      3 |       2 | 2021-02-23 |
+|      7 |       5 | 2021-02-21 |
+|      8 |       6 | 2021-03-01 |
++--------+---------+------------+
+4 rows in set (0.09 sec)
+
+7.List the customer details who not live in ‘tvm’.
+===================================================
+mysql> select * from customer where city!='tvm';
++---------+----------------+------------+------------+-----------+
+| cust_id | address        | city       | ph_no      | cust_name |
++---------+----------------+------------+------------+-----------+
+|       1 | west fort      | thrissur   | 8943787650 | carl      |
+|       3 | xyz enterprise | ernakulam  |       NULL | franklin  |
+|       4 | marine drive   | ernakulam  | 9047656432 | Augustin  |
+|       5 | mg road        | thrissur   | 9846789878 | Ben       |
+|       6 | pattambi       | palakkad   | 7098565538 | anu       |
+|       7 | rgb house      | malappuram | 9046762255 | sagar     |
++---------+----------------+------------+------------+-----------+
+6 rows in set (0.00 sec)
+
+8.List the customers who have no phone number.
+===============================================
+mysql> select cust_name from customer where ph_no is null;
++-----------+
+| cust_name |
++-----------+
+| johnson   |
+| franklin  |
++-----------+
+2 rows in set (0.00 sec)
+
+9.Display customer names in descending order.
+==============================================
+mysql> select cust_name from customer order by cust_name desc;
++-----------+
+| cust_name |
++-----------+
+| sagar     |
+| johnson   |
+| franklin  |
+| carl      |
+| Ben       |
+| Augustin  |
+| anu       |
++-----------+
+7 rows in set (0.00 sec)
+
+10.Display the customer details sorted in ascending by city and descending by names.
+=====================================================================================
+mysql> select * from customer order by city,cust_name desc;
++---------+----------------+------------+------------+-----------+
+| cust_id | address        | city       | ph_no      | cust_name |
++---------+----------------+------------+------------+-----------+
+|       3 | xyz enterprise | ernakulam  |       NULL | franklin  |
+|       4 | marine drive   | ernakulam  | 9047656432 | Augustin  |
+|       7 | rgb house      | malappuram | 9046762255 | sagar     |
+|       6 | pattambi       | palakkad   | 7098565538 | anu       |
+|       1 | west fort      | thrissur   | 8943787650 | carl      |
+|       5 | mg road        | thrissur   | 9846789878 | Ben       |
+|       2 | abc stores     | tvm        |       NULL | johnson   |
++---------+----------------+------------+------------+-----------+
+7 rows in set (0.00 sec)
+
+11.Find the customer names start with ‘A’.
+===========================================
+mysql> select cust_name from customer where cust_name like 'A%';
++-----------+
+| cust_name |
++-----------+
+| Augustin  |
+| anu       |
++-----------+
+2 rows in set (0.00 sec)
+
+12.Find the customer names who have at least 3 characters.
+===========================================================
+mysql> select cust_name from customer where cust_name like '%a%' or cust_name like '%e%';
++-----------+
+| cust_name |
++-----------+
+| carl      |
+| franklin  |
+| Augustin  |
+| Ben       |
+| anu       |
+| sagar     |
++-----------+
+6 rows in set (0.00 sec)
+
+13.Find the customer names who have at least 3 characters.
+===========================================================
+mysql> select cust_name from customer where cust_name like '___%';
++-----------+
+| cust_name |
++-----------+
+| carl      |
+| johnson   |
+| franklin  |
+| Augustin  |
+| Ben       |
+| anu       |
+| sagar     |
++-----------+
+7 rows in set (0.00 sec)
+
+14.List the names of customers their names have ‘r’ in second position.
+========================================================================
+mysql> select cust_name from customer where cust_name like '_r_%';
++-----------+
+| cust_name |
++-----------+
+| franklin  |
++-----------+
+1 row in set (0.00 sec)
+
+15.Find the customer names start with ‘a’ and are at least 3 characters in length.
+===================================================================================
+mysql> select cust_name from customer where cust_name like 'a%' and cust_name like '___%';
++-----------+
+| cust_name |
++-----------+
+| Augustin  |
+| anu       |
++-----------+
+2 rows in set (0.00 sec)

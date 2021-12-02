@@ -1,0 +1,63 @@
+                                                                                 EXP NO:24-NoSQL Deployment
+                                                                               ------------------------------
+
+
+    ==================
+    1.Local deployment 
+    ==================
+
+    => Step 1 :Install pymongo
+       ----------------------- 
+          --> open command prompt and type:
+            
+            > C:\Users\varun>python
+              Python 3.9.1 (tags/v3.9.1:1e5d33e, Dec  7 2020, 17:08:21) [MSC v.1927 64 bit (AMD64)] on win32
+              Type "help", "copyright", "credits" or "license" for more information.
+ 
+            > pip install pymongo
+_____________________________________________________________________________________________________________
+
+
+    => Step 2 : Open any text editor
+                for connection query
+       -----------------------------
+          --> type: 
+            > import pymongo
+
+              client=pymongo.MongoClient("mongodb://127.0.0.1:27017/")
+              mydb=client['library']
+              information=mydb.customer
+              rec=[{"custno":101,
+              "book_name":"abcdefg",
+              "city": "calicut"
+                  }]
+              information.insert_many(rec)
+
+______________________________________________________________________________________________________________
+
+
+    => Step 3 : Check the collection and 
+                document in the databases
+       ----------------------------------
+              > show dbs
+              INVOICE  0.000GB
+              admin    0.000GB
+              config   0.000GB
+              library  0.000GB
+              local    0.000GB
+
+             > use library
+             switched to db library
+
+             > show collections
+             customer
+
+             > db.customer.find().pretty()
+             {
+                     "_id" : ObjectId("615b1ba13cb62ee4e7f08af6"),
+                     "custno" : 101,
+                     "book_name" : "abcdefg",
+                     "city" : "calicut"
+             }
+             
+             //verified

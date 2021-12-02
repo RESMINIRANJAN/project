@@ -1,0 +1,8 @@
+mysql> use invoice;
+Database changed
+mysql> drop table student;
+Query OK, 0 rows affected (0.43 sec)
+
+mysql> desc student;
+ERROR 1146 (42S02): Table 'invoice.student' doesn't exist
+mysql>

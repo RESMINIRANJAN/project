@@ -1,0 +1,55 @@
+                         Exp-16 :PL/SQL PROGRAMS-FUNCTIONS
+                         *********************************
+
+
+1.Create a functions to calculate price_range(low,medium,high) of each product.
+  If price<=60 indicate as low,upto 150 indicate as medium,and above as high.
+================================================================================
+
+mysql> use invoice;
+Database changed
+mysql> select * from product;
++------+-----------+-------+
+| p_id | pname     | price |
++------+-----------+-------+
+|    1 | notebooks |   200 |
+|    2 | pen       |    50 |
+|    3 | pencil    |    60 |
+|    4 | bottle    |   120 |
+|    5 | bag       |  1200 |
+|    6 | eraser    |    40 |
++------+-----------+-------+
+6 rows in set (0.00 sec)
+
+mysql> delimiter $$
+mysql> create function price_range(price int)
+    -> returns varchar(20)
+    -> deterministic
+    -> begin
+    -> declare p_range varchar(20);
+    -> if price<=60 then
+    -> set p_range='Low';
+    -> elseif(price<=150 and price>60) then
+    -> set p_range='Medium';
+    -> elseif price>150 then
+    -> set p_range='High';
+    -> end if;
+    -> return (p_range);
+    -> end$$
+Query OK, 0 rows affected (0.28 sec)
+
+mysql> select pname,price,price_range(price) as "Price Range" from product$$
++-----------+-------+-------------+
+| pname     | price | Price Range |
++-----------+-------+-------------+
+| notebooks |   200 | High        |
+| pen       |    50 | Low         |
+| pencil    |    60 | Low         |
+| bottle    |   120 | Medium      |
+| bag       |  1200 | High        |
+| eraser    |    40 | Low         |
++-----------+-------+-------------+
+6 rows in set (0.00 sec)
+
+
+//verified

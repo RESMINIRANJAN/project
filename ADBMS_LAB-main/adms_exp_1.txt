@@ -1,0 +1,61 @@
+mysql> create database invoice;
+Query OK, 1 row affected (0.27 sec)
+
+mysql> use invoice;
+Database changed
+mysql> create table customer(cust_id int primary key auto_increment,address varchar(50),city varchar(20),ph_no bigint);
+Query OK, 0 rows affected (2.74 sec)
+
+mysql> create table product(p_id int primary key auto_increment,pname varchar(10),price int default 0);
+Query OK, 0 rows affected (0.97 sec)
+
+mysql> create table invoice_master(inv_id int primary key auto_increment,cust_id int,inv_date date,constraint foreign key(cust_id) references customer(cust_id));
+Query OK, 0 rows affected (3.49 sec)
+
+mysql> create table invoice_item(inv_id int,p_id int,quantity int,constraint foreign key(inv_id) references invoice_master(inv_id),constraint foreign key(p_id) references product(p_id);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> create table invoice_item(inv_id int,p_id int,quantity int,constraint foreign key(inv_id) references invoice_master(inv_id),constraint foreign key(p_id) references product(p_id));
+Query OK, 0 rows affected (2.52 sec)
+
+mysql> desc customer;
++---------+-------------+------+-----+---------+----------------+
+| Field   | Type        | Null | Key | Default | Extra          |
++---------+-------------+------+-----+---------+----------------+
+| cust_id | int         | NO   | PRI | NULL    | auto_increment |
+| address | varchar(50) | YES  |     | NULL    |                |
+| city    | varchar(20) | YES  |     | NULL    |                |
+| ph_no   | bigint      | YES  |     | NULL    |                |
++---------+-------------+------+-----+---------+----------------+
+4 rows in set (1.74 sec)
+
+mysql> desc product;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| p_id  | int         | NO   | PRI | NULL    | auto_increment |
+| pname | varchar(10) | YES  |     | NULL    |                |
+| price | int         | YES  |     | 0       |                |
++-------+-------------+------+-----+---------+----------------+
+3 rows in set (0.01 sec)
+
+mysql> desc invoice_master;
++----------+------+------+-----+---------+----------------+
+| Field    | Type | Null | Key | Default | Extra          |
++----------+------+------+-----+---------+----------------+
+| inv_id   | int  | NO   | PRI | NULL    | auto_increment |
+| cust_id  | int  | YES  | MUL | NULL    |                |
+| inv_date | date | YES  |     | NULL    |                |
++----------+------+------+-----+---------+----------------+
+3 rows in set (0.02 sec)
+
+mysql> desc invoice_item;
++----------+------+------+-----+---------+-------+
+| Field    | Type | Null | Key | Default | Extra |
++----------+------+------+-----+---------+-------+
+| inv_id   | int  | YES  | MUL | NULL    |       |
+| p_id     | int  | YES  | MUL | NULL    |       |
+| quantity | int  | YES  |     | NULL    |       |
++----------+------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql>
